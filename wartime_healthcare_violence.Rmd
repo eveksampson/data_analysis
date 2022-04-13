@@ -1,0 +1,45 @@
+---
+title: "Violence against healthcare institutions and workers during wartime"
+authors: Jon Meltzer, Eve Sampson
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Libraries
+
+```{r}
+library(tidyverse)
+library(tigris)
+library(janitor)
+library(lubridate)
+```
+
+## Load Data
+
+```{r}
+# ACLED
+acled_afg <- read_csv("data/afghanistan_2001_2021.csv")
+acled_ira <- read_csv("data/iraq_2002_present.csv")
+acled_isr <- read_csv("data/israel-palestine_2001_present.csv")
+acled_syr <- read_csv("data/syria_2010_present.csv")
+acled_ukr <- read_csv("data/ukraine_2013_present.csv")
+# WHO
+who_afg <- read_csv("data/WHO_Afghanistan 2001.csv")
+who_ira <- read_csv("data/WHO_Iraq_2002.csv")
+who_syr <- read_csv("data/WHO_Syria_2010.csv")
+who_ukr <- read_csv("data/WHO_Ukraine_2013.csv")
+```
+
+## Cleaning WHO
+
+```{r}
+who_afg <- clean_names(who_afg)
+who_ira <- clean_names(who_ira)
+who_syr <- clean_names(who_syr)
+who_ukr <- clean_names(who_ukr)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

@@ -1,0 +1,37 @@
+﻿Attack ID,Attack Date,Attack Time,Country / Territory,Certainty Level,Attack Type,Total Injured,Total Death,HC Facilities,HC Transport,HC Personnel,HC Supplies Assets,HC Warehouse Storage,HC Patients,HC Other,Type of Facility,Facility Other,HW Abduction,HW Arrest,HW Detention,Patient Abduction,Patient Arrest,Patient Detention
+IRQ001758,12/10/2018,12:00-18:00,Iraq,Confirmed, Psychological violence/threat of violence/intimidation,0,0,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001752,12/6/2018,12:00-18:00,Iraq,Confirmed, Assault (without weapons),1,0,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001749,12/4/2018,12:00-18:00,Iraq,Confirmed," Violence with individual weapons (knives, bricks, clubs, guns, grenades and improvised explosive devices (IED)",1,0,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001759,11/11/2018,12:00-18:00,Iraq,Confirmed, Assault (without weapons),1,0,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001747,11/4/2018,06:00-12:00,Iraq,Confirmed," Violence with heavy weapons (requires more than one person to use such as firearms, tanks, missiles, bombs, mortars)",0,0,YES,NO,YES,NO,NO,YES,,Mobile Clinic,,0,0,0,0,0,0
+IRQ001767,10/18/2018,06:00-12:00,Iraq,Confirmed, Psychological violence/threat of violence/intimidation,0,0,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001757,10/10/2018,00:00-06:00,Iraq,Confirmed, Psychological violence/threat of violence/intimidation,0,0,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001768,9/20/2018,12:00-18:00,Iraq,Confirmed, Assault (without weapons),1,0,NO,NO,YES,NO,NO,NO,,Mobile Clinic,,0,0,0,0,0,0
+IRQ001949,9/13/2018,06:00-12:00,Iraq,Confirmed,Other,0,0,YES,NO,NO,Unknown,NO,NO,,,,0,0,0,0,0,0
+IRQ001946,9/11/2018,Time Unknown,Iraq,Confirmed," Removal of health care assets (e.g. transport, supplies, materials)",0,0,YES,NO,Unknown,YES,NO,NO,,,,0,0,0,0,0,0
+IRQ001756,9/10/2018,18:00-00:00,Iraq,Confirmed," Violence with individual weapons (knives, bricks, clubs, guns, grenades and improvised explosive devices (IED)",0,0,YES,NO,Unknown,NO,NO,Unknown,,Mobile Clinic,,0,0,0,0,0,0
+IRQ001753,9/7/2018,18:00-00:00,Iraq,Confirmed," Removal of health care assets (e.g. transport, supplies, materials)",1,0,NO,YES,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001772,8/30/2018,06:00-12:00,Iraq,Confirmed, Assault (without weapons),1,0,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001953,8/23/2018,06:00-12:00,Iraq,Confirmed, Chemical agent,0,0,YES,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001951,8/16/2018,12:00-18:00,Iraq,Confirmed,Other,0,0,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001950,8/16/2018,12:00-18:00,Iraq,Confirmed,Other,0,1,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001771,7/25/2018,12:00-18:00,Iraq,Confirmed, Assault (without weapons),1,0,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001766,7/18/2018,18:00-00:00,Iraq,Confirmed, Setting fire,0,0,YES,NO,NO,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001755,7/10/2018,06:00-12:00,Iraq,Confirmed, Psychological violence/threat of violence/intimidation,1,0,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001770,6/24/2018,18:00-00:00,Iraq,Confirmed," Obstruction to health care delivery (e.g. physical, administrative, legal etc), Violence with individual weapons (knives, bricks, clubs, guns, grenades and improvised explosive devices (IED)",3,0,YES,NO,YES,NO,NO,YES,,,,0,0,0,0,0,0
+IRQ001765,6/18/2018,06:00-12:00,Iraq,Confirmed, Assault (without weapons),1,0,NO,NO,YES,NO,NO,NO,,Mobile Clinic,,0,0,0,0,0,0
+IRQ001760,6/12/2018,12:00-18:00,Iraq,Confirmed, Assault (without weapons),1,0,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001948,6/12/2018,12:00-18:00,Iraq,Confirmed, Assault (without weapons),3,0,Unknown,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001762,5/13/2018,12:00-18:00,Iraq,Confirmed," Violence with individual weapons (knives, bricks, clubs, guns, grenades and improvised explosive devices (IED)",0,0,NO,YES,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001947,5/12/2018,06:00-12:00,Iraq,Confirmed," Violence with individual weapons (knives, bricks, clubs, guns, grenades and improvised explosive devices (IED)",0,1,NO,YES,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001750,5/5/2018,12:00-18:00,Iraq,Confirmed," Militarization of a health care asset, Obstruction to health care delivery (e.g. physical, administrative, legal etc)",0,0,YES,NO,NO,NO,NO,NO,,Primary,,0,0,0,0,0,0
+IRQ001763,4/14/2018,12:00-18:00,Iraq,Confirmed," Violence with individual weapons (knives, bricks, clubs, guns, grenades and improvised explosive devices (IED)",0,0,YES,NO,NO,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001954,3/26/2018,18:00-00:00,Iraq,Confirmed," Violence with heavy weapons (requires more than one person to use such as firearms, tanks, missiles, bombs, mortars)",0,0,YES,YES,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ000023,3/9/2018,17:15,Iraq,Confirmed," Violence with individual weapons (knives, bricks, clubs, guns, grenades and improvised explosive devices (IED)",0,3,NO,NO,YES,NO,NO,NO,,Other,,0,0,0,0,0,0
+IRQ001754,3/9/2018,12:00-18:00,Iraq,Confirmed," Violence with individual weapons (knives, bricks, clubs, guns, grenades and improvised explosive devices (IED)",0,3,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001751,2/6/2018,06:00-12:00,Iraq,Confirmed, Psychological violence/threat of violence/intimidation,0,0,YES,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001769,1/24/2018,12:00-18:00,Iraq,Confirmed," Psychological violence/threat of violence/intimidation, Violence with individual weapons (knives, bricks, clubs, guns, grenades and improvised explosive devices (IED)",1,0,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ000013,1/24/2018,01:45,Iraq,Confirmed, Psychological violence/threat of violence/intimidation,0,0,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001952,1/22/2018,12:00-18:00,Iraq,Confirmed,Other,0,0,YES,NO,YES,NO,NO,YES,,,,0,0,0,0,0,0
+IRQ000014,1/13/2018,16:45,Iraq,Confirmed, Assault (without weapons),0,0,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
+IRQ001761,1/13/2018,12:00-18:00,Iraq,Confirmed, Psychological violence/threat of violence/intimidation,0,0,NO,NO,YES,NO,NO,NO,,,,0,0,0,0,0,0
