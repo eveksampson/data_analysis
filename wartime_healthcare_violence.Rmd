@@ -36,10 +36,33 @@ who_ukr <- read_csv("data/WHO_Ukraine_2013.csv")
 ## Cleaning WHO
 
 ```{r}
-who_afg <- clean_names(who_afg)
-who_ira <- clean_names(who_ira)
-who_syr <- clean_names(who_syr)
-who_ukr <- clean_names(who_ukr)
-```
+who_afg <- clean_names(who_afg) %>%
+    mutate(attack_date = as_date(attack_date, format = "%m/%d/%Y"))
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+who_ira <- clean_names(who_ira) %>%
+    mutate(attack_date = as_date(attack_date, format = "%m/%d/%Y"))
+
+who_syr <- clean_names(who_syr) %>%
+    mutate(attack_date = as_date(attack_date, format = "%m/%d/%Y"))
+
+who_ukr <- clean_names(who_ukr) %>%
+    mutate(attack_date = as_date(attack_date, format = "%m/%d/%Y"))
+```
+WHO limitations:
+
+WHO Afghanistan data - only goes back to 2017
+
+WHO Iraq data - ONLY has 2018 data
+
+WHO Syria data - only goes back to 2018
+
+WHO Ukraine data - only goes back to 2018; ongoing so some things may not be confirmed
+
+
+```{r}
+
+
+
+
+
+```
