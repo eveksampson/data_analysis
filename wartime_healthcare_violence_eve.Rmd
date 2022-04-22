@@ -102,3 +102,22 @@ ukr_flashpoints <- who_ukr_total %>%
 
 ukr_flashpoints
 ```
+
+What percentage of incidents of violence against civilians are directed at healthcare facilities and workers?
+
+Since 2018 (when the WHO started collecting Syria data) there have been 292 attacks against healthcare workers and facilities in Syria.
+
+Since the 2022 Russian invasion into Ukraine on Feb 24, 2022, there have been 119 documented attacks against healthcare workers and facilities in Ukraine.
+
+To find percentage, we can choose a figure from a reputable source of total civilian casualties. 
+
+
+
+```{r}
+who_syr_all <- who_syr %>%
+  summarize(attack_id=n())
+
+who_ukr_all <- who_ukr %>%
+  filter(attack_date >= as.Date("2022-02-24")) %>%
+  summarize(attack_id=n())
+```
