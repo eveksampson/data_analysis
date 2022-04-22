@@ -1,0 +1,104 @@
+---
+title: "Violence against healthcare institutions and workers during wartime"
+authors: Jon Meltzer, Eve Sampson
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Libraries
+
+```{r}
+library(tidyverse)
+library(tigris)
+library(janitor)
+library(lubridate)
+library(ggrepel)
+library(sf)
+library(tidycensus)
+
+census_api_key("c84fed421923b886b2bbdab82b6838c9a11b8c44", install=TRUE)
+```
+
+## Load Data
+
+```{r}
+# ACLED
+# WHO
+who_afg <- read_csv("data/WHO_Afghanistan 2001.csv")
+who_ira <- read_csv("data/WHO_Iraq_2002.csv")
+who_syr <- read_csv("data/WHO_Syria_2010.csv")
+who_ukr <- read_csv("data/WHO_Ukraine_2013.csv")
+```
+
+## Cleaning WHO
+
+```{r}
+who_afg <- clean_names(who_afg) %>%
+    mutate(attack_date = as_date(attack_date, format = "%m/%d/%Y"))
+
+who_ira <- clean_names(who_ira) %>%
+    mutate(attack_date = as_date(attack_date, format = "%m/%d/%Y"))
+
+who_syr <- clean_names(who_syr) %>%
+    mutate(attack_date = as_date(attack_date, format = "%m/%d/%Y"))
+
+who_ukr <- clean_names(who_ukr) %>%
+    mutate(attack_date = as_date(attack_date, format = "%m/%d/%Y"))
+```
+WHO limitations:
+
+WHO Afghanistan data - only goes back to 2017
+
+WHO Iraq data - ONLY has 2018 data
+
+WHO Syria data - only goes back to 2018
+
+WHO Ukraine data - only goes back to 2018; ongoing so some things may not be confirmed
+
+Question 2: What specific conflict flash-points perpetrate a rise in attacks on healthcare in Ukraine? Syria? 
+
+Overall answer: A huge limitation of this data is the fact that it does not include location other than country. That means we cannot look at regional data to compare specific battles. 
+
+Syria: Initially we wanted to isolate the 2nd Battle of Raqqa that lasted less than a year between 2016-2017 however, the data doesn't start until 2018. So we looked to see when the highest numbers of attacks occured. The highest number of attacks on healthcare occurred in a 3-day span, from February 19-21, 2018, with 8 attacks the 20th and 21st, and 6 attacks on the 19th. The next highest day was in June. After that weekend, there does not seem to be a pattern. So, we researched what happened on that weekend. There was no specific coverage that weekend, but this was the beginning of period when the Idlib province was obliterated by Russian airstrikes and then chemical warfare was used by the Syrian regime. At this point, without knowing exactly where these incidents occured, we cannot correlate the data to this specific flashpoint but it is very interesting. 
+
+Syria below:
+```{r}
+
+who_syr_total <- who_syr %>% 
+  group_by(attack_date) %>%
+  summarise(attack_id=n()) %>%
+  rename(total_attacks = attack_id)
+
+syr_flashpoints <- who_syr_total %>%
+  ggplot() + 
+  geom_line(aes(x=attack_date, y=total_attacks)) + 
+  scale_x_date(breaks = "1 month", limits = c(as.Date("2018-01-01")+1,as.Date("2018-12-31"))) +
+  theme(
+    axis.text.x = element_text(angle = 45,  hjust=1) 
+  )  
+
+syr_flashpoints
+```
+Ukraine here:
+As the siege of Mariupol is ongoing, we can look at all of the data. March 12, 2022 had the most attacks on healthcare in the dataset with 7. March 1st, 3rd and 9th tied for second place with 6 attacks each. Again, like Syria, without coordinates for these attacks we cannot say if the are directly caused by a certain military battle or action. On March 12, Russian forces were zeroing in on Kiev and there was a lot of devasation in Makariv (outside of Kiev). 
+
+```{r}
+
+who_ukr_total <- who_ukr %>% 
+  group_by(attack_date) %>%
+  summarise(attack_id=n()) %>%
+  rename(total_attacks = attack_id)
+
+ukr_flashpoints <- who_ukr_total %>%
+  ggplot() + 
+  geom_line(aes(x=attack_date, y=total_attacks)) + 
+  scale_x_date(breaks = "1 day", limits = c(as.Date("2022-02-24")+1,as.Date("2022-04-07"))) +
+  theme(
+    axis.text.x = element_text(angle = 45,  hjust=1) 
+  )  
+
+ukr_flashpoints
+```
