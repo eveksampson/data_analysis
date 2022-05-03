@@ -17,15 +17,20 @@ library(janitor)
 library(lubridate)
 ```
 
-## Load Data
+## Load Data test
 
 ```{r}
 # ACLED
-acled_afg <- read_csv("data/afghanistan_2001_2021.csv")
-acled_ira <- read_csv("data/iraq_2002_present.csv")
-acled_isr <- read_csv("data/israel-palestine_2001_present.csv")
-acled_syr <- read_csv("data/syria_2010_present.csv")
-acled_ukr <- read_csv("data/ukraine_2013_present.csv")
+acled_afg <- read_csv("data/afghanistan_2001_2021.csv") %>% 
+    mutate(event_date=dmy(event_date))
+acled_ira <- read_csv("data/iraq_2002_present.csv") %>% 
+    mutate(event_date=dmy(event_date))
+acled_isr <- read_csv("data/israel-palestine_2001_present.csv") %>% 
+    mutate(event_date=dmy(event_date))
+acled_syr <- read_csv("data/syria_2010_present.csv") %>% 
+    mutate(event_date=dmy(event_date))
+acled_ukr <- read_csv("data/ukraine_2013_present.csv") %>% 
+    mutate(event_date=dmy(event_date))
 # WHO
 who_afg <- read_csv("data/WHO_Afghanistan 2001.csv")
 who_ira <- read_csv("data/WHO_Iraq_2002.csv")
@@ -42,4 +47,690 @@ who_syr <- clean_names(who_syr)
 who_ukr <- clean_names(who_ukr)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Basic analysis - violence against civilians by actors in Ukraine, daily
+
+```{r}
+ukr_civ <- acled_ukr %>% 
+  filter(
+    event_type == "Violence against civilians",
+    fatalities > 0
+  ) %>% 
+  mutate(event_date=dmy(event_date)) %>% 
+  group_by(event_date)
+
+ukr_civ_naf <- acled_ukr %>% 
+  filter(
+    event_type == "Violence against civilians",
+    fatalities > 0,
+    actor1 == "NAF: United Armed Forces of Novorossiya"
+  ) %>% 
+  mutate(event_date=dmy(event_date)) %>% 
+  group_by(event_date) %>% 
+  summarize(
+    count=n(),
+    fatalities=sum(fatalities)
+  )
+
+ukr_civ_ru <- acled_ukr %>% 
+  filter(
+    event_type == "Violence against civilians",
+    fatalities > 0,
+    actor1 == "Military Forces of Russia (2000-)"
+  ) %>% 
+  mutate(event_date=dmy(event_date)) %>% 
+  group_by(event_date) %>% 
+  summarize(
+    count=n(),
+    fatalities=sum(fatalities)
+  )
+
+ukr_civ_uk <- acled_ukr %>% 
+  filter(
+    event_type == "Violence against civilians",
+    fatalities > 0,
+    actor1 == "Military Forces of Ukraine (2019-)" | actor1 == "Military Forces of Ukraine (2014-2019)"
+  ) %>% 
+  mutate(event_date=dmy(event_date)) %>% 
+  group_by(event_date) %>% 
+  summarize(count=n(),
+    fatalities=sum(fatalities)
+  )
+
+ukr_civ_azov <- acled_ukr %>% 
+  filter(
+    event_type == "Violence against civilians",
+    fatalities > 0,
+    assoc_actor_1 == "Azov Battalion"
+  ) %>% 
+  mutate(event_date=dmy(event_date)) %>% 
+  group_by(event_date) %>% 
+  summarize(
+    count=n(),
+    fatalities=sum(fatalities)
+  )
+
+ukr_civ_anon <- acled_ukr %>% 
+  filter(
+    event_type == "Violence against civilians",
+    fatalities > 0,
+    actor1 == "Unidentified Armed Group (Ukraine)"
+  ) %>% 
+  mutate(event_date=dmy(event_date)) %>% 
+  group_by(event_date) %>% 
+  summarize(
+    count=n(),
+    fatalities=sum(fatalities)
+  )
+
+```
+
+## Raqqa - filter
+
+```{r}
+raqqa <- acled_syr %>% 
+  filter(
+    str_detect(location, "^Ar-Raqqa") &
+    event_date >= "2016-11-06" &
+    event_date < "2017-10-20" &
+    event_type == "Violence against civilians"
+  )
+```
+
+## Mosul - filter
+
+```{r}
+mosul <- acled_ira %>% 
+  filter(
+    str_detect(location, "^Mosul") &
+    event_date >= "2016-10-16" &
+    event_date < "2017-07-20" &
+    event_type == "Violence against civilians"
+  )
+```
+
+## Mariupol - filter
+
+```{r}
+mariu <- acled_ukr %>% 
+  filter(
+    str_detect(location, "Mariupol") &
+    event_date >= "2022-02-24" &
+    event_type == "Violence against civilians"
+  )
+```
+
+## NOTES - Deliverable 1
+
+We have begun to clean and comb through our datasets. It is becoming apparent that we will need to take different tacks for the different datasets, but we can use both to tell different parts of the same story.
+
+The WHO data shows us that Ukraine has seen an inordinate number of instances of violence against healthcare workers and facilities. However, the WHO data does not go back far enough for us to compare it to other conflicts still in their early stages. The Syrian Civil War started in 2011, Iraq in 2003 and Afghanistan in 2001, but our data (in both databases) does not go back that far.
+
+Since we cannot accurately compare the entirety of the conflicts in question, we can use individual battles to see what trends emerge. Mariupol, ongoing, seems a good candidate for comparison to flashpoints like Raqqa in Syria and Mosul in Iraq (both 2016-2017). Other large concentrations of civilian casualties may provide other useful comparisons, like flareups in Israel/Palestine.
+
+Graphing and visualization will be a big part of this project. We will track the number of civilian casualties over time using ACLED data, and then exmine how the WHO data correlates to those trends. Do mass civilian casualties coincide with attacks on healthcare facilities? Is there an uptick civilian casualties seen after the destruction of hospitals and clinics? At what point in urban battles do more imprecise methods of battle appear, resulting in more civilian casualties?
+
+There is no shortage of datapoints to analyze - overall we have hundreds of thousands of instances catalogued. What will be difficult is determining which are civilian casualties, and which are between armed combatants. Simply "violence against civilians" won't do - that categorization is reserved for intentional targeting of noncombatants. Drone strikes and artillery shelling will account for much of the civilian deaths in an urban combat scenario. 
+
+WHO limitations:
+
+WHO Afghanistan data - only goes back to 2017
+
+WHO Iraq data - ONLY has 2018 data
+
+WHO Syria data - only goes back to 2018
+
+WHO Ukraine data - only goes back to 2018; ongoing so some things may not be confirmed
+
+## Q1 - Is violence against healthcare workers specific to Russia, or just typical of any war?
+
+Zooming in on urban conflict in Mariupol (UKR), Raqqa (SYR) and Mosul (IRA) first, then zooming out on each conflict as a whole.
+
+## Q1a - healthcare workers as pct of all victims in urban battles
+
+MARIUPOL - 11.1%
+
+```{r}
+mariu <- read_csv("data/mariupol.csv")
+
+mariu_hc <- mariu %>% 
+  filter(
+    str_detect(actor1, "^Health") | str_detect(assoc_actor_1, "^Health") & event_type == "Violence against civilians")
+
+mariu_cv <- mariu %>% 
+  filter(
+    event_type == "Violence against civilians"
+  )
+
+mariu_hc_pct <- nrow(mariu_hc)/nrow(mariu_cv) * 100
+
+mariu_hc_pct
+```
+
+RAQQA - 0.7%
+
+```{r}
+raqqa_hc <- raqqa %>% 
+  filter(
+    str_detect(actor1, "^Health") | str_detect(assoc_actor_1, "^Health") & event_type == "Violence against civilians")
+
+raqqa_cv <- raqqa %>% 
+  filter(
+    event_type == "Violence against civilians"
+  )
+
+raqqa_hc_pct <- nrow(raqqa_hc)/nrow(raqqa_cv) * 100
+
+raqqa_hc_pct
+```
+
+MOSUL - 0.7%
+
+```{r}
+mosul_hc <- mosul %>% 
+  filter(
+    str_detect(actor1, "^Health") | str_detect(assoc_actor_1, "^Health") & event_type == "Violence against civilians")
+
+mosul_cv <- mosul %>% 
+  filter(
+    event_type == "Violence against civilians"
+  )
+
+mosul_hc_pct <- nrow(mosul_hc)/nrow(mosul_cv) * 100
+
+mosul_hc_pct
+```
+
+So far, it looks like incidences of violence against healthcare workers are more common in Mariupol (11% of incidents of violence specifically directed towards civilians) than they were in Mosul or Raqqa (both at under 1%). What about violence against civilians in general?
+
+We have to scale data here - Mosul lasted for ~9 months, Raqqa for ~4, and Mariupol for just under 2. Therefore, it will make sense for us to come up with a calculation like average incidents per day.
+
+## Q1b - number of days per battle
+
+MOSUL - 16 Oct 2016 - 20 July 2017; only have data as far back as 1 Jan 2017 - 200 DAYS
+
+```{r}
+mos_start="20170101"
+mos_end="20170720"
+mos_int <- interval(ymd(mos_start),ymd(mos_end))
+mos_days <- as.period(mos_int,"days")
+```
+
+RAQQA - 6 June 2017 - 17 October 2017 - 133 DAYS
+
+```{r}
+raq_start="20170606"
+raq_end="20171017"
+raq_int <- interval(ymd(raq_start),ymd(raq_end))
+raq_days <- as.period(raq_int,"days")
+```
+
+MARIUPOL - 24 Feb 2022 - 22 Apr 2022 - 57 DAYS
+
+```{r}
+mar_start="20220224"
+mar_end="20220422"
+mar_int <- interval(ymd(mar_start),ymd(mar_end))
+mar_days <- as.period(mar_int,"days")
+```
+
+## Q1c - violence against civilians per day
+
+NOTE - divided the numberator by 2 to account for duplicate rows in the dataframe
+
+MOSUL - 0.7 per day
+
+```{r}
+mos_per_day <- (nrow(mosul_cv)/2)/200
+mos_per_day
+```
+
+RAQQA - 0.55 per day
+
+```{r}
+raq_per_day <- (nrow(raqqa_cv)/2)/133
+raq_per_day
+```
+
+MARIUPOL - 0.15 per day
+
+```{r}
+mar_per_day <- (nrow(mariu_cv)/2)/57
+mar_per_day
+```
+
+Interestingly, it seems Mariupol has seen fewer instances of violence against civilians than the two battles in the Middle East.
+
+## Q1d - city actors
+
+MOSUL
+
+```{r}
+mosul_act <- mosul %>% 
+  filter(actor1 != "Civilians (Iraq)" & event_type == "Violence against civilians") %>% 
+  group_by(actor1) %>% 
+  summarise(count=n()) %>% 
+  arrange(desc(count))
+
+mosul_act
+```
+
+RAQQA
+
+```{r}
+raqqa_act <- raqqa %>% 
+  filter(actor1 != "Civilians (Syria)" & event_type == "Violence against civilians") %>% 
+  group_by(actor1) %>% 
+  summarise(count=n()) %>% 
+  arrange(desc(count))
+
+raqqa_act
+```
+
+MARIUPOL
+
+
+```{r}
+mariu_act <- mariu %>% 
+  filter(actor1 != "Civilians (Ukraine)"  & event_type == "Violence against civilians") %>% 
+  group_by(actor1) %>% 
+  summarise(count=n()) %>% 
+  arrange(desc(count))
+
+mariu_act
+```
+
+## Q1e - "deadliest actor" per day
+
+In these urban conflicts, Mariupol stands out from Raqqa and Mosul in one imporant way so far: in the latter two, the defenders (ISIS) inflicted the most violence against civilians. In Mariupol, however, the attackers (Russia) have committed more instances of civilian violence.
+
+How do these numbers look if we apply the instances/day metric to the actors who perpetrated the most civilian violence?
+
+MOSUL - ISIS - 0.63/day
+
+```{r}
+126/200
+```
+
+RAQQA - ISIS - 0.27/day
+
+```{r}
+36/133
+```
+
+MARIUPOL - Russia - 0.09/day
+
+```{r}
+5/57
+```
+
+With these figures, we see that Russia has by far the fewest instances of violence against civilians per day, over the length of the urban battle. But this may not paint the whole picture.
+
+## Q1f - aggressors & defenders as % of total incidents
+
+What about the percentage of total incidents per primary attackers & defenders? NOTE - we need to divide the denominator by two to account for the duplicate rows in the data
+
+MOSUL
+  Attacker - Military Forces of Iraq - 2.9%
+```{r}
+(4/(nrow(mosul_cv)/2))*100
+```
+  Defender - ISIS - 90%
+```{r}
+(126/(nrow(mosul_cv)/2))*100
+```
+
+RAQQA
+  Attacker - QSD - 37%
+```{r}
+(27/(nrow(raqqa_cv)/2))*100
+```
+  Defender - ISIS - 49.3%
+```{r}
+(36/(nrow(raqqa_cv)/2))*100
+```
+
+MARIUPOL
+  Attacker - Russia - 55.6%
+```{r}
+(5/(nrow(mariu_cv)/2))*100
+```
+  Defender - Ukraine - 0%
+  
+## Q1g - visualization - incidents by day
+
+MOSUL
+
+```{r}
+mosul_daily <- mosul_cv %>% 
+  group_by(event_date) %>% 
+  summarise(count=n()) %>% 
+  arrange(event_date)
+
+ggplot()+
+  geom_line(data = mosul_daily, aes(x=event_date,y=count))
+```
+
+RAQQA
+
+```{r}
+raqqa_daily <- raqqa_cv %>% 
+  group_by(event_date) %>% 
+  summarise(count=n()) %>% 
+  arrange(event_date)
+
+ggplot()+
+  geom_line(data = raqqa_daily, aes(x=event_date,y=count))
+```
+
+MARIUPOL
+
+```{r}
+mariu_daily <- mariu_cv %>% 
+  group_by(event_date) %>% 
+  summarise(count=n()) %>% 
+  arrange(event_date)
+
+ggplot()+
+  geom_line(data = mariu_daily, aes(x=event_date,y=count))
+```
+
+  
+## Q1h - conclusions
+
+Even though Russia has a lower count of incidences of violence against civilians per day, they do account for well over half of the total incidents of violence against civilians. They also have the distinction of being the only attacker among our three case studies that was responsible for the most incidents.
+
+For what little it's worth, the data shows us that Russian forces since the new invasion of Ukraine have been less deadly to civilians than ISIS was. A low bar to clear, but it's been demonstrated by data nonetheless.
+
+## Q2 - what specific conflict flash-points perpetrate a rise in attacks on healthcare in Ukraine? Syria? 
+
+Overall answer: A huge limitation of this data is the fact that it does not include location other than country. That means we cannot look at regional data to compare specific battles. 
+
+Syria: Initially we wanted to isolate the 2nd Battle of Raqqa that lasted less than a year between 2016-2017 however, the data doesn't start until 2018. So we looked to see when the highest numbers of attacks occured. The highest number of attacks on healthcare occurred in a 3-day span, from February 19-21, 2018, with 8 attacks the 20th and 21st, and 6 attacks on the 19th. The next highest day was in June. After that weekend, there does not seem to be a pattern. So, we researched what happened on that weekend. There was no specific coverage that weekend, but this was the beginning of period when the Idlib province was obliterated by Russian airstrikes and then chemical warfare was used by the Syrian regime. At this point, without knowing exactly where these incidents occured, we cannot correlate the data to this specific flashpoint but it is very interesting. 
+
+SYRIA
+
+```{r}
+who_syr_total <- who_syr %>% 
+  group_by(attack_date) %>%
+  summarise(attack_id=n()) %>%
+  rename(total_attacks = attack_id)
+who_syr_total %>%
+  ggplot() + 
+  geom_line(aes(x=attack_date, y=total_attacks)) + 
+  scale_x_date(breaks = "1 month", limits = c(as.Date("2018-01-01")+1,as.Date("2018-12-31"))) +
+  theme(
+    axis.text.x = element_text(angle = 45,  hjust=1) 
+  )  
+```
+
+Ukraine here:
+As the siege of Mariupol is ongoing, we can look at all of the data. March 12, 2022 had the most attacks on healthcare in the dataset with 7. March 1st, 3rd and 9th tied for second place with 6 attacks each. Again, like Syria, without coordinates for these attacks we cannot say if the are directly caused by a certain military battle or action. On March 12, Russian forces were zeroing in on Kiev and there was a lot of devasation in Makariv (outside of Kiev). 
+
+```{r}
+who_ukr_total <- who_ukr %>% 
+  group_by(attack_date) %>%
+  summarise(attack_id=n()) %>%
+  rename(total_attacks = attack_id)
+ukr_flashpoints <- who_ukr_total %>%
+  ggplot() + 
+  geom_line(aes(x=attack_date, y=total_attacks)) + 
+  scale_x_date(breaks = "1 day", limits = c(as.Date("2022-02-24")+1,as.Date("2022-04-07"))) +
+  theme(
+    axis.text.x = element_text(angle = 45,  hjust=1) 
+  )  
+ukr_flashpoints
+```
+
+## Q3 - What percentage of incidents of violence against civilians are directed at healthcare facilities and workers?
+
+Since 2018 (when the WHO started collecting Syria data) there have been 292 attacks against healthcare workers and facilities in Syria.
+
+Since the 2022 Russian invasion into Ukraine on Feb 24, 2022, there have been 119 documented attacks against healthcare workers and facilities in Ukraine.
+
+To find percentage, we can choose a figure from a reputable source of total civilian casualties. 
+
+```{r}
+who_syr_all <- who_syr %>%
+  summarize(attack_id=n())
+who_ukr_all <- who_ukr %>%
+  filter(attack_date >= as.Date("2022-02-24")) %>%
+  summarize(attack_id=n())
+```
+
+## Q4 - which events are deadliest to civilians?
+
+We need to zoom back out to the entire conflict, group by sub_event_type, summarize, count and arrange. Then, we will zoom back in to the three cities and see if the concentration of urban residents makes a difference.
+
+We will need to str_detect for "civilian" in notes, since event type "Violence against civilians" does not account for collateral damage.
+
+## Q4a - total civilian fatalities by event type
+
+IRAQ
+
+```{r}
+ira_civ_fat_by_sub <- acled_ira %>% 
+  filter(
+    str_detect(notes,"civilian") & fatalities > 0 | str_detect(notes,"Civilian") & fatalities > 0
+  ) %>% 
+  group_by(sub_event_type) %>% 
+  summarise(count=n()) %>% 
+  arrange(desc(count))
+
+ira_civ_fat_by_sub
+```
+
+SYRIA
+
+```{r}
+syr_civ_fat_by_sub <- acled_syr %>% 
+  filter(
+    str_detect(notes,"civilian") & fatalities > 0 | str_detect(notes,"Civilian") & fatalities > 0
+  ) %>% 
+  group_by(sub_event_type) %>% 
+  summarise(count=n()) %>% 
+  arrange(desc(count))
+
+syr_civ_fat_by_sub
+```
+
+UKRAINE
+
+```{r}
+ukr_civ_fat_by_sub <- acled_ukr %>% 
+  filter(
+    str_detect(notes,"civilian") & fatalities > 0 | str_detect(notes,"Civilian") & fatalities > 0
+  ) %>% 
+  group_by(sub_event_type) %>% 
+  summarise(count=n()) %>% 
+  arrange(desc(count))
+
+ukr_civ_fat_by_sub
+```
+
+So far, we can see that the most dangerous sub_event_type for civilians differs by conflict. In Ukraine, it is shelling/artillery/missiles; in Syria, air/drone strikes; in Iraq, remote explosives/landmines/IEDs.
+
+## Q4b - deadliest event types by actor
+
+IRAQ - remote explosive/landmine/IED
+
+```{r}
+ira_ied <- acled_ira %>% 
+  filter(
+    str_detect(notes,"civilian") & fatalities > 0 | str_detect(notes,"Civilian") & fatalities > 0
+  ) %>% 
+  filter(
+    sub_event_type == "Remote explosive/landmine/IED" & actor1 != "Civilians (Iraq)"
+  ) %>% 
+  group_by(actor1) %>% 
+  summarise(count=n()) %>% 
+  arrange(desc(count))
+
+ira_ied
+```
+
+SYRIA - air strike/drone
+
+```{r}
+syr_air <- acled_syr %>% 
+  filter(
+    str_detect(notes,"civilian") & fatalities > 0 | str_detect(notes,"Civilian") & fatalities > 0
+  ) %>% 
+  filter(
+    sub_event_type == "Air/drone strike" & actor1 != "Civilians (Syria)"
+  ) %>% 
+  group_by(actor1) %>% 
+  summarise(count=n()) %>% 
+  arrange(desc(count))
+
+syr_air
+```
+
+UKRAINE - artillery
+
+```{r}
+ukr_art <- acled_ukr %>% 
+  filter(
+    str_detect(notes,"civilian") & fatalities > 0 | str_detect(notes,"Civilian") & fatalities > 0
+  ) %>% 
+  filter(
+    sub_event_type == "Shelling/artillery/missile attack" & actor1 != "Civilians (Ukraine)"
+  ) %>% 
+  group_by(actor1) %>% 
+  summarise(count=n()) %>% 
+  arrange(desc(count))
+
+ukr_art
+```
+
+We can see here that, as expected, Russian forces are behind the majority of artillery strikes that killed civilians in Ukraine. While their Syrian allies were behind the majority of air strikes that killed civilians in Syria, we can also observe some that were perpetrated by Russian forces themselves. How many were killed total in these three conflicts? What's the average number of fatalities per day?
+
+## Q4c - deadliest events by total fatalities
+
+IRAQ - IEDs
+
+```{r}
+ira_total <- acled_ira %>% 
+  filter(
+    str_detect(notes,"civilian") & fatalities > 0 | str_detect(notes,"Civilian") & fatalities > 0
+  ) %>% 
+  filter(
+    sub_event_type == "Remote explosive/landmine/IED" & actor1 != "Civilians (Iraq)"
+  ) %>%
+  group_by(actor1) %>% 
+  summarise(total_deaths = sum(fatalities)) %>% 
+  arrange(desc(total_deaths))
+
+ira_total
+```
+
+SYRIA - Air Strikes
+
+```{r}
+syr_total <- acled_syr %>% 
+  filter(
+    str_detect(notes,"civilian") & fatalities > 0 | str_detect(notes,"Civilian") & fatalities > 0
+  ) %>% 
+  filter(
+    sub_event_type == "Air/drone strike" & actor1 != "Civilians (Syria)"
+  ) %>% 
+  group_by(actor1) %>%
+  summarise(total_deaths = sum(fatalities)) %>% 
+  arrange(desc(total_deaths))
+
+syr_total
+```
+
+UKRAINE - artillery
+
+```{r}
+ukr_total <- acled_ukr %>% 
+  filter(
+    str_detect(notes,"civilian") & fatalities > 0 | str_detect(notes,"Civilian") & fatalities > 0
+  ) %>% 
+  filter(
+    sub_event_type == "Shelling/artillery/missile attack" & actor1 != "Civilians (Ukraine)"
+  ) %>% 
+  group_by(actor1) %>% 
+  summarise(total_deaths = sum(fatalities)) %>% 
+  arrange(desc(total_deaths))
+
+ukr_total
+```
+
+## Q4d - fatalities/day
+
+First, we need to determine the number of days of data we have for each conflict.
+
+IRAQ
+
+```{r}
+iraq_length <- acled_ira %>%
+  summarise(
+    max = max(event_date),
+    min = min(event_date)
+  ) %>% 
+  mutate(length=(max - min))
+
+iraq_length$length
+```
+
+SYRIA
+
+```{r}
+syr_length <- acled_syr %>%
+  summarise(
+    max = max(event_date),
+    min = min(event_date)
+  ) %>% 
+  mutate(length=(max - min))
+
+syr_length$length
+```
+
+UKRAINE
+
+```{r}
+ukr_length <- acled_ukr %>%
+  summarise(
+    max = max(event_date),
+    min = min(event_date)
+  ) %>% 
+  mutate(length=(max - min))
+
+ukr_length$length
+```
+
+## Q4e - fatalities/day pt 2
+
+Now, we can mutate to find the number of fatalities per day.
+
+IRAQ
+
+```{r}
+ira_dead_per_day <- ira_total %>% 
+  mutate(deaths_per_day = (total_deaths/as.numeric(iraq_length$length)))
+
+ira_dead_per_day
+```
+
+SYRIA
+
+```{r}
+syr_dead_per_day <- syr_total %>% 
+  mutate(deaths_per_day = (total_deaths/as.numeric(syr_length$length)))
+
+syr_dead_per_day
+```
+
+UKRAINE
+
+```{r}
+ukr_dead_per_day <- ukr_total %>% 
+  mutate(deaths_per_day = (total_deaths/as.numeric(ukr_length$length)))
+
+ukr_dead_per_day
+```
+
+## Q4f - Conclusions
+
+It does appear, using the total deaths per day metric, that Russia has caused significantly more civilian deaths than the deadliest actors/events in Syria and Ukraine. The number could be much higher; the significant disadvantage of the ACLED data is the non-uniformity of the formatting in the notes and the actor1 column.
