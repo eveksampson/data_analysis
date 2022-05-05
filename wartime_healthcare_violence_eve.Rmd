@@ -17,9 +17,7 @@ library(janitor)
 library(lubridate)
 library(ggrepel)
 library(sf)
-library(tidycensus)
 
-census_api_key("c84fed421923b886b2bbdab82b6838c9a11b8c44", install=TRUE)
 ```
 
 ## Load Data
